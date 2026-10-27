@@ -1,26 +1,29 @@
-name: Build and Tests
+name: Testes E2E Engeplus
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
-  schedule:   
-    - cron: '0 12 * * *'
+    branches: [master]
+  workflow_dispatch:
 
 jobs:
-  build:
-    name: Run E2E Tests
+  test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-    - uses: actions/checkout@v5.0.0
-    - name: Use Node.js 21
-      uses: actions/setup-node@v6.0.0
-      with:
-        node-version: 22
-        cache: 'npm'      
-    - run: npm install 
-    - run: npx playwright install      
-    - run: npm run actions  
-      env:
-        ZEROSTEP_TOKEN: ${{ secrets.ZEROSTEP_TOKEN }}       
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --output artifacts/media
+      - name: Salvar relatório
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-playwright
+          path: artifacts/
+          retention-days: 14

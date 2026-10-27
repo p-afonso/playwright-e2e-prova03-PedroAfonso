@@ -1,30 +1,20 @@
-import { PlaywrightTestConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 
-const config: PlaywrightTestConfig = {
-  testDir: 'src/scenarios',
-  timeout: 120000,
-  retries: 0,
+export default defineConfig({
+  testDir: './src/scenarios',
+  testMatch: 'Engeplus.spec.ts',
+  timeout: 60000,
+  expect: { timeout: 15000 },
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: [['list'], ['html', { outputFolder: 'artifacts/report', open: 'never' }]],
   use: {
-    trace: 'on',
-    channel: 'msedge',
+    baseURL: 'https://engeplus.com.br',
     locale: 'pt-BR',
-    headless: true,
-    viewport: { width: 1280, height: 720 },
-    ignoreHTTPSErrors: true,
-    screenshot: 'on',
-    video: 'off'
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure'
   },
-  expect: {
-    timeout: 30000
-  },
-  reporter: [
-    [
-      'html',
-      {
-        outputFolder: 'artifacts/report',
-        open: 'never'
-      }
-    ]
-  ]
-};
-export default config;
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }]
+});

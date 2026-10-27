@@ -1,41 +1,24 @@
-# Playwright E2E
+# Testes E2E — Portal Engeplus
 
-## GitHub Actions + SonarCloud
+Três cenários com Playwright e TypeScript:
 
-[![Build and Tests](https://github.com/p-afonso/playwright-e2e/actions/workflows/node.js.yml/badge.svg?branch=master)](https://github.com/p-afonso/playwright-e2e/actions/workflows/node.js.yml)
+1. A página inicial apresenta as últimas notícias.
+2. A navegação abre a editoria Segurança.
+3. Uma notícia é aberta a partir da página inicial.
 
-</br>
+## Executar
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=p-afonso_playwright-e2e&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=p-afonso_playwright-e2e)
+Requisitos: Node.js 22 ou superior e acesso à internet.
 
-The fork is linked to the [`p-afonso_playwright-e2e` SonarQube Cloud project](https://sonarcloud.io/project/overview?id=p-afonso_playwright-e2e). SonarQube Cloud automatically analyzes the default branch and pull requests when code is pushed. The GitHub Actions workflow runs the E2E tests separately; no `SONAR_TOKEN` is needed for automatic analysis.
+```bash
+npm ci
+npx playwright install --with-deps chromium
+npx playwright test
+npx playwright show-report artifacts/report
+```
 
-## Getting Started
+O relatório e os rastros de testes que falharem ficam em `artifacts/`. Os testes usam o site público, que pode mudar ou ficar indisponível.
 
-In order to execute this project you must follow the steps below:
+## Integração contínua
 
-1. Install [Node JS](https://nodejs.org/) (version >= 22.x)
-1. Run `npm i --save-dev` to install all the project dependencies
-1. Run `npx playwright install` to install the browsers used by Playwright
-1. Run `npm run ci` to execute the entire test suite
-1. Run `npm run show-report` to visualize the reports
-
-All execution artifacts can be found in `./artifacts`, if you want to remove these files run `npm run clean`.
-
-## Using ZeroStep AI
-</br>
-
-To use the AI ​​feature with ZeroStep, you must create the `zerostep.config.json` file in the root of the project and add your ZeroStep token.
-
-## Project Structure
-</br>
-<ul>
-    <li>Scenarios: Test scenario mapping</li>
-    <li>Support: Project structure files
-        <ul>
-            <li>Elements: Mapping the elements of each screen</li>
-            <li>Fixtures: Data configuration files</li>
-            <li>Pages: Logic used to perform actions in tests</li>
-        </ul>
-    </li>
-</ul>
+O GitHub Actions instala o Chromium, executa os três cenários em push na master e em pull requests e disponibiliza o relatório como artefato. A configuração existente de análise automática do SonarCloud está em `.sonarcloud.properties`; ela exige que o projeto correspondente esteja vinculado a este repositório no SonarCloud.
